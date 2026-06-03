@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PowerStats - Твой силовой ранг</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Шрифты Orbitron для цифр и Inter для текста -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-gaming { font-family: 'Orbitron', sans-serif; }
+        .neon-glow {
+            box-shadow: 0 0 25px rgba(217, 70, 239, 0.25), 0 0 50px rgba(168, 85, 247, 0.15);
+        }
+        #adModal {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-[#07070c] text-slate-100 min-h-screen flex flex-col justify-between overflow-x-hidden relative">
+
+    <!-- Абстрактные неоновые сферы на фоне для визуала -->
+    <div class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-[20%] right-[-10%] w-[40vw] h-[40vw] bg-fuchsia-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+    <!-- Хедер -->
+    <header class="border-b border-purple-950/40 bg-[#0c0c14]/70 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl animate-pulse">⚡</span>
+                <span class="text-xl font-black tracking-widest font-gaming bg-gradient-to-r from-fuchsia-400 via-purple-500 to-indigo-500 bg-clip-text text-transparent">POWERSTATS</span>
+            </div>
+            <span class="text-[10px] uppercase font-gaming tracking-widest text-fuchsia-400 bg-fuchsia-500/10 border border-fuchsia-500/30 px-3 py-1 rounded-md">Multi-Lift System v3.1</span>
+        </div>
+    </header>
+
+    <!-- Модальное окно межстраничной рекламы (Interstitial Ad) -->
+    <div id="adModal" class="fixed inset-0 bg-[#050508]/95 z-[100] flex flex-col items-center justify-center p-4 opacity-0 invisible">
+        <div class="max-w-md w-full bg-[#0f0f1a] border border-purple-500/30 rounded-2xl p-6 text-center space-y-6 relative shadow-2xl">
+            <div>
+                <span class="text-[10px] font-gaming uppercase tracking-widest text-purple-400 block mb-1">Загрузка результатов анализа</span>
+                <h3 class="text-lg font-bold text-white">Вычисление ранга биометрии...</h3>
+            </div>
+            
+            <!-- Плейсхолдер под рекламу -->
+            <div class="w-full aspect-video bg-[#07070c] rounded-xl border border-purple-950 flex flex-col items-center justify-center p-4 relative overflow-hidden">
+                <div class="w-full aspect-video bg-[#07070c] ...">
+                    
+                </div>
+            </div>
+
+            <!-- Кнопка закрытия с таймером -->
+            <button id="closeAdBtn" disabled class="w-full bg-slate-800 text-slate-400 font-gaming tracking-widest text-xs font-black py-3 px-4 rounded-xl cursor-not-allowed transition duration-200">
+                ПРОПУСТИТЬ ЧЕРЕЗ <span id="adTimer">5</span>...
+            </button>
+        </div>
+    </div>
+
+    <!-- Контент -->
+    <main class="max-w-5xl mx-auto px-4 py-6 w-full flex-grow grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+        
+        <!-- ФОРМА ВВОДА -->
+        <div class="md:col-span-1 bg-[#0f0f1a]/80 p-6 rounded-2xl border border-purple-950/60 backdrop-blur-md h-fit space-y-6">
+            <div>
+                <h2 class="text-sm font-gaming uppercase tracking-widest text-purple-400 mb-1">Шаг 1</h2>
+                <p class="text-lg font-extrabold text-white">Выбор дисциплины & веса</p>
+            </div>
+            
+            <form id="calcForm" class="space-y-5">
+                <!-- Пол -->
+                <div>
+                    <label class="block text-[11px] font-gaming uppercase tracking-wider text-slate-400 mb-2">Гендерный класс</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="gender" value="male" checked class="peer sr-only">
+                            <div class="text-center py-2.5 rounded-xl border border-purple-950 bg-[#141424] text-slate-400 text-sm font-semibold transition peer-checked:border-fuchsia-500 peer-checked:bg-fuchsia-500/10 peer-checked:text-fuchsia-400">МУЖ</div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="gender" value="female" class="peer sr-only">
+                            <div class="text-center py-2.5 rounded-xl border border-purple-950 bg-[#141424] text-slate-400 text-sm font-semibold transition peer-checked:border-fuchsia-500 peer-checked:bg-fuchsia-500/10 peer-checked:text-fuchsia-400">ЖЕН</div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Выбор упражнения -->
+                <div>
+                    <label for="exercise" class="block text-[11px] font-gaming uppercase tracking-wider text-slate-400 mb-2">Выберите упражнение</label>
+                    <select id="exercise" class="w-full bg-[#07070c] border border-purple-950 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-fuchsia-500 font-bold text-sm cursor-pointer">
+                        <option value="bench_press">🏋️‍♂️ Жим штанги лежа</option>
+                        <option value="squat">🦵 Приседания со штангой</option>
+                        <option value="deadlift">💥 Становая тяга</option>
+                        <option value="pullups">💪 Подтягивания (с весом)</option>
+                        <option value="biceps">🔥 Подъем на бицепс штанги</option>
+                    </select>
+                </div>
+
+                <!-- Вес тела -->
+                <div>
+                    <label for="bodyWeight" class="block text-[11px] font-gaming uppercase tracking-wider text-slate-400 mb-2">Вес носителя (кг)</label>
+                    <input type="number" id="bodyWeight" min="40" max="160" value="80" required
+                        class="w-full bg-[#07070c] border border-purple-950 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-fuchsia-500 font-bold font-gaming text-lg">
+                </div>
+
+                <!-- Поднимаемый вес -->
+                <div>
+                    <label id="liftWeightLabel" for="liftWeight" class="block text-[11px] font-gaming uppercase tracking-wider text-slate-400 mb-2">Максимальный результат (кг)</label>
+                    <input type="number" id="liftWeight" min="5" max="450" value="100" required
+                        class="w-full bg-[#07070c] border border-purple-950 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-fuchsia-500 font-bold font-gaming text-lg text-fuchsia-400">
+                    <p id="pullupHint" class="text-[10px] text-slate-500 mt-1 hidden">*Для подтягиваний укажите ваш вес + вес отягощения на поясе (0 если чистый вес).</p>
+                </div>
+
+                <button type="submit" 
+                    class="w-full bg-gradient-to-r from-fuchsia-600 via-purple-600 to-indigo-600 hover:from-fuchsia-500 hover:to-indigo-500 text-white font-gaming tracking-widest text-xs font-black py-4 px-4 rounded-xl transition duration-300 transform active:scale-95 shadow-md cursor-pointer uppercase">
+                    Запустить анализ
+                </button>
+            </form>
+
+            <!-- Место под рекламу -->
+            <div class="border border-dashed border-purple-950 rounded-xl p-3 bg-purple-950/5 text-center">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-5514607226237933"
+                     data-ad-slot="НОМЕР_БЛОКА_ИЗ_КАБИНЕТА"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+        </div>
+
+        <!-- КАРТОЧКА СТАТИСТИКИ ДЛЯ ТИКТОКА -->
+        <div class="md:col-span-2 space-y-4">
+            
+            <!-- Главный игровой экран результатов -->
+            <div id="captureArea" class="bg-gradient-to-b from-[#131322] to-[#0d0d18] p-6 sm:p-8 rounded-2xl border border-purple-500/30 shadow-2xl neon-glow relative overflow-hidden">
+                <div class="absolute inset-0 bg-[linear-gradient(to_right,#1f1f35_1px,transparent_1px),linear-gradient(to_bottom,#1f1f35_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-10"></div>
+                
+                <div class="relative z-10 flex flex-col justify-between h-full space-y-6">
+                    
+                    <!-- Верхняя строчка -->
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span id="currentExLabel" class="text-[10px] font-gaming uppercase tracking-widest text-fuchsia-400 block mb-1">ЖИМ ШТАНГИ ЛЕЖА</span>
+                            <h1 id="resultLevel" class="text-4xl sm:text-5xl font-black font-gaming tracking-tight text-white uppercase drop-shadow-[0_4px_12px_rgba(245,61,245,0.3)]">
+                                ПОЛУБОГ
+                            </h1>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[10px] font-gaming uppercase tracking-widest text-slate-500 block">Рейтинг силы</span>
+                            <span id="resultPercentile" class="text-2xl font-black font-gaming bg-gradient-to-r from-fuchsia-400 to-purple-400 bg-clip-text text-transparent">TOP 15%</span>
+                        </div>
+                    </div>
+
+                    <!-- Большой анимированный Прогресс-бар -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs font-gaming text-slate-400 px-1">
+                            <span>0% (Дерево)</span>
+                            <span class="text-fuchsia-400">Твой уровень</span>
+                            <span>100% (Элита)</span>
+                        </div>
+                        <div class="w-full h-4 bg-[#07070c] rounded-full border border-purple-950/80 p-0.5 overflow-hidden">
+                            <div id="progressBar" class="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-fuchsia-500 rounded-full shadow-[0_0_10px_#d946ef] transition-all duration-1000 ease-out" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Сетка с основными показателями -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                        
+                        <div class="bg-[#07070c]/60 p-4 rounded-xl border border-purple-950/50 backdrop-blur-sm">
+                            <span class="text-[10px] font-gaming uppercase tracking-wider text-slate-400 block mb-1">Множитель веса</span>
+                            <div class="flex items-baseline gap-1">
+                                <span id="weightRatio" class="text-3xl font-black font-gaming text-white">1.25x</span>
+                            </div>
+                            <p class="text-[10px] text-slate-500 mt-1">от массы тела</p>
+                        </div>
+
+                        <div class="bg-[#07070c]/60 p-4 rounded-xl border border-purple-950/50 backdrop-blur-sm">
+                            <span class="text-[10px] font-gaming uppercase tracking-wider text-slate-400 block mb-1">Индекс ДОТСа / Силы</span>
+                            <div class="flex items-baseline gap-1">
+                                <span id="dotsPoints" class="text-3xl font-black font-gaming text-fuchsia-400">85.4</span>
+                            </div>
+                            <p class="text-[10px] text-slate-500 mt-1">абсолютный коэффициент</p>
+                        </div>
+
+                        <div class="col-span-2 sm:col-span-1 bg-[#07070c]/60 p-4 rounded-xl border border-purple-950/50 backdrop-blur-sm flex flex-col justify-between">
+                            <div>
+                                <span class="text-[10px] font-gaming uppercase tracking-wider text-slate-400 block mb-1">Ачивка</span>
+                                <span id="badge" class="text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded">⚡ Гроза Зала</span>
+                            </div>
+                            <p id="badgeDesc" class="text-[10px] text-slate-400 mt-2">Жмешь больше своего веса. Уважение на районе.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Блок с красивым графиком -->
+            <div class="bg-[#0f0f1a]/80 p-5 rounded-2xl border border-purple-950/60">
+                <h3 class="text-xs font-gaming uppercase tracking-widest text-slate-400 mb-4">
+                    📊 Положение на кривой силы населения
+                </h3>
+                <div class="w-full aspect-[2.5/1] relative">
+                    <canvas id="distributionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Место под рекламу -->
+            <div class="border border-dashed border-purple-950 rounded-xl p-2.5 bg-purple-950/5 text-center">
+                <ins class="adsbygoogle"
+                     style="display:inline-block;width:100%;height:90px"
+                     data-ad-client="ca-pub-5514607226237933"
+                     data-ad-slot="НОМЕР_ВТОРОГО_БЛОКА"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Футер -->
+    <footer class="border-t border-purple-950/40 bg-[#07070c] py-4 text-center">
+        <p class="text-[10px] font-gaming tracking-widest text-slate-600 uppercase">⚡ Power.X — Доминируй или тренируйся ⚡</p>
+    </footer>
+
+    <!-- СКРИПТЫ И МАТЕМАТИКА -->
+    <script>
+        const DOTS_COEFFS = {
+            male: { A: -0.000001093, B: 0.0007391293, C: -0.1845868807, D: 21.4192568745, E: -74.9616030129, maxW: 210, minW: 40 },
+            female: { A: -0.0000010706, B: 0.0005158568, C: -0.1126651949, D: 13.6175032047, E: -57.776157354, maxW: 150, minW: 40 }
+        };
+
+        const EXERCISE_SCALES = {
+            bench_press: { male: { min: 25, max: 95 }, female: { min: 20, max: 80 }, name: "ЖИМ ШТАНГИ ЛЕЖА" },
+            squat:       { male: { min: 35, max: 130 }, female: { min: 28, max: 105 }, name: "ПРИСЕДАНИЯ СО ШТАНГОЙ" },
+            deadlift:    { male: { min: 40, max: 150 }, female: { min: 32, max: 120 }, name: "СТАНОВАЯ ТЯГА" },
+            pullups:     { male: { min: 30, max: 110 }, female: { min: 22, max: 90 }, name: "ПОДТЯГИВАНИЯ" },
+            biceps:      { male: { min: 12, max: 45 },  female: { min: 8, max: 32 },   name: "ПОДЪЕМ НА БИЦЕПС" }
+        };
+
+        let chartInstance = null;
+        let pendingCalculation = null;
+
+        window.addEventListener('DOMContentLoaded', () => { 
+            setupExerciseListener();
+            calculateStrength(); 
+        });
+
+        function setupExerciseListener() {
+            const exSelect = document.getElementById('exercise');
+            exSelect.addEventListener('change', () => {
+                const hint = document.getElementById('pullupHint');
+                const label = document.getElementById('liftWeightLabel');
+                
+                if (exSelect.value === 'pullups') {
+                    hint.classList.remove('hidden');
+                    label.innerText = "Общий вес (Вес тела + Блины) (кг)";
+                } else {
+                    hint.classList.add('hidden');
+                    label.innerText = "Максимальный результат (кг)";
+                }
+            });
+        }
+
+        document.getElementById('calcForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            pendingCalculation = {
+                gender: document.querySelector('input[name="gender"]:checked').value,
+                exercise: document.getElementById('exercise').value,
+                bodyWeight: parseFloat(document.getElementById('bodyWeight').value),
+                liftWeight: parseFloat(document.getElementById('liftWeight').value)
+            };
+
+            showAdAndThenCalculate();
+        });
+
+        function showAdAndThenCalculate() {
+            const modal = document.getElementById('adModal');
+            const timerSpan = document.getElementById('adTimer');
+            const closeBtn = document.getElementById('closeAdBtn');
+            
+            let timeLeft = 5;
+            timerSpan.innerText = timeLeft;
+            closeBtn.disabled = true;
+            closeBtn.innerText = `ПРОПУСТИТЬ ЧЕРЕЗ ${timeLeft}...`;
+            closeBtn.className = "w-full bg-slate-800 text-slate-500 font-gaming tracking-widest text-xs font-black py-3 px-4 rounded-xl cursor-not-allowed";
+
+            modal.classList.remove('invisible', 'opacity-0');
+            modal.classList.add('opacity-100');
+
+            const countdown = setInterval(() => {
+                timeLeft--;
+                if (timeLeft > 0) {
+                    timerSpan.innerText = timeLeft;
+                    closeBtn.innerText = `ПРОПУСТИТЬ ЧЕРЕЗ ${timeLeft}...`;
+                } else {
+                    clearInterval(countdown);
+                    closeBtn.disabled = false;
+                    closeBtn.innerText = "СМОТРЕТЬ РЕЗУЛЬТАТЫ ×";
+                    closeBtn.className = "w-full bg-gradient-to-r from-fuchsia-600 to-purple-600 hover:from-fuchsia-500 hover:to-purple-500 text-white font-gaming tracking-widest text-xs font-black py-3 px-4 rounded-xl cursor-pointer shadow-lg shadow-fuchsia-500/20";
+                }
+            }, 1000);
+
+            closeBtn.onclick = function() {
+                modal.classList.add('opacity-0');
+                setTimeout(() => {
+                    modal.classList.add('invisible');
+                    if (pendingCalculation) {
+                        executeCalculation(pendingCalculation);
+                    }
+                }, 300);
+            };
+        }
+
+        function calculateStrength() {
+            const data = {
+                gender: document.querySelector('input[name="gender"]:checked').value,
+                exercise: document.getElementById('exercise').value,
+                bodyWeight: parseFloat(document.getElementById('bodyWeight').value),
+                liftWeight: parseFloat(document.getElementById('liftWeight').value)
+            };
+            executeCalculation(data);
+        }
+
+        function executeCalculation(data) {
+            const { gender, exercise, bodyWeight, liftWeight } = data;
+            if (!bodyWeight || !liftWeight) return;
+
+            document.getElementById('currentExLabel').innerText = EXERCISE_SCALES[exercise].name;
+
+            const ratio = (liftWeight / bodyWeight).toFixed(2);
+            document.getElementById('weightRatio').innerText = `${ratio}x`;
+
+            const dots = calculateDots(gender, bodyWeight, liftWeight);
+            document.getElementById('dotsPoints').innerText = dots.toFixed(1);
+
+            const stats = getLevelAndPercentile(gender, exercise, dots, ratio);
+            
+            document.getElementById('resultLevel').innerText = stats.level;
+            document.getElementById('resultPercentile').innerText = `TOP ${100 - stats.percentile}%`;
+            
+            setTimeout(() => {
+                document.getElementById('progressBar').style.width = `${stats.percentile}%`;
+            }, 50);
+
+            document.getElementById('badge').innerText = stats.badge;
+            document.getElementById('badgeDesc').innerText = stats.badgeDesc;
+
+            updateChart(stats.percentile);
+        }
+
+        function calculateDots(gender, w, lift) {
+            const c = DOTS_COEFFS[gender];
+            let weight = Math.max(c.minW, Math.min(c.maxW, w));
+            const denominator = (c.A * Math.pow(weight, 4)) + (c.B * Math.pow(weight, 3)) + (c.C * Math.pow(weight, 2)) + (c.D * weight) + c.E;
+            return lift * (500 / denominator);
+        }
+
+        function getLevelAndPercentile(gender, exercise, dots, ratio) {
+            let p = 0;
+            let level = "Рядовой";
+            let badge = "🌱 Новичок";
+            let badgeDesc = "Все с чего-то начинают. Главное — регулярность тренировок.";
+
+            const scale = EXERCISE_SCALES[exercise][gender];
+            const k = 0.085; 
+            const mid = (scale.max + scale.min) / 2;
+            
+            p = Math.round(100 / (1 + Math.exp(-k * (dots - mid))));
+            if (p < 1) p = 1; if (p > 99) p = 99;
+
+            if (p >= 95) level = "БОЖЕСТВО 👑";
+            else if (p >= 85) level = "БЕРСЕРК 🔥";
+            else if (p >= 65) level = "АТЛЕТ 💪";
+            else if (p >= 35) level = "ВОИН ⚔️";
+            else if (p >= 15) level = "СКАУТ 🏃‍♂️";
+            else level = "ДЕРЕВО 🪵";
+
+            if (exercise === 'bench_press') {
+                if (ratio >= 1.5) { badge = "🚀 КИБОРГ"; badgeDesc = "Жмешь полтора своих веса. Элита любого спортзала."; }
+                else if (ratio >= 1.0) { badge = "🏋️‍♂️ АЛЬФА-ЖИМ"; badgeDesc = "Штанга тяжелее тебя. Порог силы пройден."; }
+                else { badge = "⚡ ГРОЗА ГАНТЕЛЕЙ"; badgeDesc = "Уверенный жим. Вес на штанге стабильно растет."; }
+            } else if (exercise === 'squat') {
+                if (ratio >= 2.0) { badge = "🦵 СТАЛЬНЫЕ КВАДРЫ"; badgeDesc = "Присед в 2+ веса тела! Твоим ногам позавидуют титаны."; }
+                else if (ratio >= 1.5) { badge = "🌋 ОТБОЙНЫЙ МОЛОТ"; badgeDesc = "Мощнейший присед. Полтора рабочих веса покорились."; }
+                else { badge = "🏃‍♂️ ДЕНЬ НОГ УВАЖЕН"; badgeDesc = "Приседаешь с хорошей техникой и весом."; }
+            } else if (exercise === 'deadlift') {
+                if (ratio >= 2.5) { badge = "🪐 РАЗРУШИТЕЛЬ ПЛАНЕТ"; badgeDesc = "Тяга превосходит все ожидания. Абсолютная мощь спины."; }
+                else if (ratio >= 1.8) { badge = "🏗️ ЖЕЛЕЗОБЕТОН"; badgeDesc = "Срываешь тяжеленные веса с помоста играючи."; }
+                else { badge = "🧱 КРЕПКИЙ ХВАТ"; badgeDesc = "Отличная база становой тяги положена."; }
+            } else if (exercise === 'pullups') {
+                if (ratio >= 1.4) { badge = "🦅 ГРАВИТАЦИИ НЕТ"; badgeDesc = "Тянешь себя вместе с огромным весом. Крылья титана."; }
+                else if (ratio >= 1.1) { badge = "✈️ ВЫСШИЙ ПИЛОТАЖ"; badgeDesc = "Подтягивания с внушительным доп. весом на поясе."; }
+                else { badge = "🐒 ТУРНИКМЕН Х-100"; badgeDesc = "Отличный относительный показатель силы верха тела."; }
+            } else if (exercise === 'biceps') {
+                if (ratio >= 0.8) { badge = "🦍 РУКИ-БАЗУКИ"; badgeDesc = "Поднять столько на бицепс? Твои руки больше чем ноги у многих."; }
+                else if (ratio >= 0.5) { badge = "⚔️ АРМРЕСТЛЕР"; badgeDesc = "Строгий подъем половины веса собственного тела."; }
+                else { badge = "💪 ПАМПИНГ МАСТЕР"; badgeDesc = "Качественная проработка двуглавой мышцы."; }
+            }
+
+            return { percentile: p, level: level, badge: badge, badgeDesc: badgeDesc };
+        }
+
+        function updateChart(userPercentile) {
+            const ctx = document.getElementById('distributionChart').getContext('2d');
+            const labels = [];
+            const dataData = [];
+            const backgroundColors = [];
+
+            for (let i = 1; i <= 99; i++) {
+                labels.push(i);
+                const mean = 50;
+                const stdDev = 22;
+                const y = (1 / (stdDev * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((i - mean) / stdDev, 2));
+                dataData.push(y);
+
+                if (i === userPercentile) {
+                    backgroundColors.push('#f53df5');
+                } else if (i < userPercentile) {
+                    backgroundColors.push('rgba(168, 85, 247, 0.25)');
+                } else {
+                    backgroundColors.push('rgba(255, 255, 255, 0.03)');
+                }
+            }
+
+            if (chartInstance) { chartInstance.destroy(); }
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: dataData,
+                        backgroundColor: backgroundColors,
+                        barPercentage: 1,
+                        categoryPercentage: 1,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                callback: function(val, index) {
+                                    if (index === 10) return 'Дерево';
+                                    if (index === 50) return '50%';
+                                    if (index === 85) return 'Берсерк';
+                                    if (index === 95) return 'Бог';
+                                    return '';
+                                },
+                                color: '#64748b',
+                                font: { size: 9, family: 'Orbitron' }
+                            }
+                        },
+                        y: { display: false }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
