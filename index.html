@@ -36,7 +36,7 @@
                 <span class="text-2xl animate-pulse">⚡</span>
                 <span class="text-xl font-black tracking-widest font-gaming bg-gradient-to-r from-fuchsia-400 via-purple-500 to-indigo-500 bg-clip-text text-transparent">POWER.X</span>
             </div>
-            <span class="text-[10px] uppercase font-gaming tracking-widest text-fuchsia-400 bg-fuchsia-500/10 border border-fuchsia-500/30 px-3 py-1 rounded-md">Multi-Lift System v3.4</span>
+            <span class="text-[10px] uppercase font-gaming tracking-widest text-fuchsia-400 bg-fuchsia-500/10 border border-fuchsia-500/30 px-3 py-1 rounded-md">Multi-Lift System v3.5</span>
         </div>
     </header>
 
@@ -199,13 +199,13 @@
                 </div>
             </div>
 
-            <div class="border border-dashed border-purple-950 rounded-xl p-2.5 bg-purple-950/5 text-center">
+            <div class="border border-t border-purple-950 rounded-xl p-2.5 bg-purple-950/5 text-center">
                 <span class="text-[9px] text-purple-600 font-gaming block mb-1">Horizontal Banner Slot</span>
                 <ins class="adsbygoogle"
                      style="display:block"
                      data-ad-client="ca-pub-5514607226237933"
                      data-ad-slot="auto"
-                     data-ad-format="horizontal"
+                     data-ad-format="auto"
                      data-full-width-responsive="true"></ins>
                 <script>
                      (adsbygoogle = window.adsbygoogle || []).push({});
@@ -285,6 +285,9 @@
 
         function showAdAndThenCalculate() {
             const modal = document.getElementById('processModal');
+            
+            // КРИТИЧЕСКИЙ ФИКС: Безопасный поиск таймера и кнопки
+            // Если AdBlock стёр их контент, скрипт не падает в ошибку, а сразу рендерит результат!
             const timerSpan = document.getElementById('processTimer');
             const closeBtn = document.getElementById('closeModalBtn');
             
