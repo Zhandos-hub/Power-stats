@@ -36,7 +36,7 @@
                 <span class="text-2xl animate-pulse">⚡</span>
                 <span class="text-xl font-black tracking-widest font-gaming bg-gradient-to-r from-fuchsia-400 via-purple-500 to-indigo-500 bg-clip-text text-transparent">POWER.X</span>
             </div>
-            <span class="text-[10px] uppercase font-gaming tracking-widest text-fuchsia-400 bg-fuchsia-500/10 border border-fuchsia-500/30 px-3 py-1 rounded-md">Multi-Lift System v3.3</span>
+            <span class="text-[10px] uppercase font-gaming tracking-widest text-fuchsia-400 bg-fuchsia-500/10 border border-fuchsia-500/30 px-3 py-1 rounded-md">Multi-Lift System v3.4</span>
         </div>
     </header>
 
@@ -47,12 +47,16 @@
                 <h3 class="text-lg font-bold text-white">Вычисление ранга биометрии...</h3>
             </div>
             
-            <div class="w-full aspect-video bg-[#07070c] rounded-xl border border-purple-950 flex flex-col items-center justify-center p-4 relative overflow-hidden">
-                <span class="text-xs text-slate-500 font-gaming uppercase tracking-widest absolute top-2 left-2">Реклама</span>
-                <div class="text-center space-y-2">
-                    <div class="text-4xl text-fuchsia-500 animate-bounce">🎬</div>
-                    <p class="text-xs text-slate-400 max-w-xs">Здесь будет транслироваться межстраничное объявление или видео-баннер Google AdSense</p>
-                </div>
+            <div class="w-full aspect-video bg-[#07070c] rounded-xl border border-purple-950 flex flex-col items-center justify-center p-2 relative overflow-hidden">
+                <ins class="adsbygoogle"
+                     style="display:block; width:100%; height:100%;"
+                     data-ad-client="ca-pub-5514607226237933"
+                     data-ad-slot="auto"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
             </div>
 
             <button id="closeModalBtn" disabled class="w-full bg-slate-800 text-slate-400 font-gaming tracking-widest text-xs font-black py-3 px-4 rounded-xl cursor-not-allowed transition duration-200">
@@ -116,9 +120,15 @@
 
             <div class="border border-dashed border-purple-950 rounded-xl p-3 bg-purple-950/5 text-center">
                 <span class="text-[9px] text-purple-600 font-gaming block mb-2 uppercase tracking-widest">Sponsor Block</span>
-                <div class="w-full h-[150px] bg-[#07070c] rounded-lg flex items-center justify-center text-[11px] text-slate-600">
-                    Рекламный блок (300x250)
-                </div>
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-5514607226237933"
+                     data-ad-slot="auto"
+                     data-ad-format="rectangle"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
             </div>
         </div>
 
@@ -191,9 +201,15 @@
 
             <div class="border border-dashed border-purple-950 rounded-xl p-2.5 bg-purple-950/5 text-center">
                 <span class="text-[9px] text-purple-600 font-gaming block mb-1">Horizontal Banner Slot</span>
-                <div class="w-full h-[70px] bg-[#07070c] rounded-lg flex items-center justify-center text-xs text-slate-600">
-                    Адаптивный баннер (AdSense)
-                </div>
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-5514607226237933"
+                     data-ad-slot="auto"
+                     data-ad-format="horizontal"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
             </div>
 
         </div>
@@ -375,7 +391,6 @@
             updateChart(stats.percentile);
         }
 
-        // Формула DOTS
         function calculateDots(gender, w, lift) {
             const c = DOTS_COEFFS[gender];
             let weight = Math.max(c.minW, Math.min(c.maxW, w));
