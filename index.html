@@ -15,23 +15,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
     
     <style>
-     
-    /* ... твои текущие стили ... */
-
-    /* ФИКС ГОРИЗОНТАЛЬНОГО ВЫЛЕТА */
-    html, body {
-        overflow-x: hidden;
-        width: 100%;
-        margin: 0;
-        padding: 0;
-    }
-
-    /* Делаем так, чтобы любые элементы внутри не могли растянуть экран */
-    * {
-        max-width: 100vw;
-        box-sizing: border-box;
-    }
-
         body { font-family: 'Inter', sans-serif; }
         .font-gaming { font-family: 'Orbitron', sans-serif; }
         .neon-glow {
@@ -39,6 +22,26 @@
         }
         #processModal {
             transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        /* ЖЕСТКИЙ ФИКС ГОРИЗОНТАЛЬНОГО ВЫЛЕТА (ПРАВИЛО ФРОНТЕНДА) */
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            max-width: 100vw;
+        }
+
+        /* Ограничиваем любые рекламные вставки, чтобы они не ломали мобильную сетку */
+        ins.adsbygoogle {
+            max-width: 100% !important;
+            display: block !important;
+            overflow: hidden !important;
+        }
+
+        * {
+            box-sizing: border-box;
         }
     </style>
 </head>
@@ -48,7 +51,7 @@
     <div class="absolute bottom-[20%] right-[-10%] w-[40vw] h-[40vw] bg-fuchsia-600/10 rounded-full blur-[120px] pointer-events-none"></div>
 
     <header class="border-b border-purple-950/40 bg-[#0c0c14]/70 backdrop-blur-md sticky top-0 z-50">
-        <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-2">
                 <span class="text-2xl animate-pulse">⚡</span>
                 <span class="text-xl font-black tracking-widest font-gaming bg-gradient-to-r from-fuchsia-400 via-purple-500 to-indigo-500 bg-clip-text text-transparent">POWER STATS</span>
@@ -83,9 +86,9 @@
         </div>
     </div>
 
-    <main class="max-w-5xl mx-auto px-4 py-6 w-full flex-grow grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-grow grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
         
-        <div class="md:col-span-1 bg-[#0f0f1a]/80 p-6 rounded-2xl border border-purple-950/60 backdrop-blur-md h-fit space-y-6">
+        <div class="md:col-span-1 bg-[#0f0f1a]/80 p-6 rounded-2xl border border-purple-950/60 backdrop-blur-md h-fit space-y-6 w-full overflow-hidden">
             <div>
                 <h2 class="text-sm font-gaming uppercase tracking-widest text-purple-400 mb-1">Шаг 1</h2>
                 <p class="text-lg font-extrabold text-white">Выбор дисциплины & веса</p>
@@ -136,14 +139,14 @@
                 </button>
             </form>
 
-            <div class="border border-dashed border-purple-950 rounded-xl p-3 bg-purple-950/5 text-center">
+            <div class="border border-dashed border-purple-950 rounded-xl p-3 bg-purple-950/5 text-center max-w-full overflow-hidden">
                 <span class="text-[9px] text-purple-600 font-gaming block mb-2 uppercase tracking-widest">Sponsor Block</span>
                 <ins class="adsbygoogle"
                      style="display:block"
                      data-ad-client="ca-pub-5514607226237933"
                      data-ad-slot="auto"
-                     data-adtest="on"
                      data-ad-format="rectangle"
+                     data-adtest="on"
                      data-full-width-responsive="true"></ins>
                 <script>
                      (adsbygoogle = window.adsbygoogle || []).push({});
@@ -151,29 +154,29 @@
             </div>
         </div>
 
-        <div class="md:col-span-2 space-y-4">
+        <div class="md:col-span-2 space-y-4 w-full overflow-hidden">
             
-            <div id="captureArea" class="bg-gradient-to-b from-[#131322] to-[#0d0d18] p-6 sm:p-8 rounded-2xl border border-purple-500/30 shadow-2xl neon-glow relative overflow-hidden">
+            <div id="captureArea" class="bg-gradient-to-b from-[#131322] to-[#0d0d18] p-6 sm:p-8 rounded-2xl border border-purple-500/30 shadow-2xl neon-glow relative overflow-hidden w-full">
                 <div class="absolute inset-0 bg-[linear-gradient(to_right,#1f1f35_1px,transparent_1px),linear-gradient(to_bottom,#1f1f35_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-10"></div>
                 
                 <div class="relative z-10 flex flex-col justify-between h-full space-y-6">
                     <div class="flex justify-between items-start">
-    <div>
-        <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 mb-1">
-            <span id="currentExLabel" class="text-[10px] font-gaming uppercase tracking-widest text-fuchsia-400 block">ЖИМ ШТАНГИ ЛЕЖА</span>
-            <span class="text-[10px] text-slate-600 font-gaming">•</span>
-            <span id="resultWeightsLabel" class="text-[10px] font-gaming text-slate-400 uppercase tracking-wider">100 кг / 80 кг</span>
-        </div>
-        <h1 id="resultLevel" class="text-4xl sm:text-5xl font-black font-gaming tracking-tight text-white uppercase drop-shadow-[0_4px_12px_rgba(245,61,245,0.3)]">
-            ПОЛУБОГ
-        </h1>
-    </div>
-    <div class="text-right">
-        <span class="text-[9px] font-gaming uppercase tracking-widest text-fuchsia-500/60 block mb-1">powerstatstech.vercel.app</span>
-        <span class="text-[10px] font-gaming uppercase tracking-widest text-slate-500 block">Рейтинг силы</span>
-        <span id="resultPercentile" class="text-2xl font-black font-gaming bg-gradient-to-r from-fuchsia-400 to-purple-400 bg-clip-text text-transparent">TOP 15%</span>
-    </div>
-</div>
+                        <div>
+                            <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 mb-1">
+                                <span id="currentExLabel" class="text-[10px] font-gaming uppercase tracking-widest text-fuchsia-400 block">ЖИМ ШТАНГИ ЛЕЖА</span>
+                                <span class="text-[10px] text-slate-600 font-gaming">•</span>
+                                <span id="resultWeightsLabel" class="text-[10px] font-gaming text-slate-400 uppercase tracking-wider">100 кг / 80 кг</span>
+                            </div>
+                            <h1 id="resultLevel" class="text-4xl sm:text-5xl font-black font-gaming tracking-tight text-white uppercase drop-shadow-[0_4px_12px_rgba(245,61,245,0.3)]">
+                                ПОЛУБОГ
+                            </h1>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[9px] font-gaming uppercase tracking-widest text-fuchsia-500/60 block mb-1">powerstatstech.vercel.app</span>
+                            <span class="text-[10px] font-gaming uppercase tracking-widest text-slate-500 block">Рейтинг силы</span>
+                            <span id="resultPercentile" class="text-2xl font-black font-gaming bg-gradient-to-r from-fuchsia-400 to-purple-400 bg-clip-text text-transparent">TOP 15%</span>
+                        </div>
+                    </div>
 
                     <div class="space-y-2">
                         <div class="flex justify-between text-xs font-gaming text-slate-400 px-1">
@@ -214,7 +217,7 @@
                 </div>
             </div>
 
-            <div class="bg-[#0f0f1a]/80 p-5 rounded-2xl border border-purple-950/60">
+            <div class="bg-[#0f0f1a]/80 p-5 rounded-2xl border border-purple-950/60 w-full overflow-hidden">
                 <h3 class="text-xs font-gaming uppercase tracking-widest text-slate-400 mb-4">
                     📊 Положение на кривой силы населения
                 </h3>
@@ -223,7 +226,7 @@
                 </div>
             </div>
 
-            <div class="border border-t border-purple-950 rounded-xl p-2.5 bg-purple-950/5 text-center">
+            <div class="border border-t border-purple-950 rounded-xl p-2.5 bg-purple-950/5 text-center max-w-full overflow-hidden">
                 <span class="text-[9px] text-purple-600 font-gaming block mb-1">Horizontal Banner Slot</span>
                 <ins class="adsbygoogle"
                      style="display:block"
@@ -310,9 +313,6 @@
 
         function showAdAndThenCalculate() {
             const modal = document.getElementById('processModal');
-            
-            // КРИТИЧЕСКИЙ ФИКС: Безопасный поиск таймера и кнопки
-            // Если AdBlock стёр их контент, скрипт не падает в ошибку, а сразу рендерит результат!
             const timerSpan = document.getElementById('processTimer');
             const closeBtn = document.getElementById('closeModalBtn');
             
@@ -386,10 +386,17 @@
             const { gender, exercise, bodyWeight, liftWeight } = data;
             if (!bodyWeight || !liftWeight) return;
 
+            // 1. ДИНАМИЧЕСКИ ОБНОВЛЯЕМ НАЗВАНИЕ УПРАЖНЕНИЯ В КАРТОЧКЕ
+            const labelEl = document.getElementById('currentExLabel');
+            if (labelEl) {
+                labelEl.innerText = EXERCISE_SCALES[exercise].name;
+            }
+
+            // 2. ДИНАМИЧЕСКИ ОБНОВЛЯЕМ ПЛАШКУ С РЕЗУЛЬТАТАМИ ВЕСА В КАРТОЧКЕ
             const weightsLabelEl = document.getElementById('resultWeightsLabel');
-if (weightsLabelEl) {
-    weightsLabelEl.innerText = `${liftWeight} кг (при весе ${bodyWeight} кг)`;
-}
+            if (weightsLabelEl) {
+                weightsLabelEl.innerText = `${liftWeight} кг (при весе ${bodyWeight} кг)`;
+            }
 
             const ratio = (liftWeight / bodyWeight).toFixed(2);
             const ratioEl = document.getElementById('weightRatio');
