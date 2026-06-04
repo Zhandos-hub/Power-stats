@@ -15,6 +15,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
     
     <style>
+     
+    /* ... твои текущие стили ... */
+
+    /* ФИКС ГОРИЗОНТАЛЬНОГО ВЫЛЕТА */
+    html, body {
+        overflow-x: hidden;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Делаем так, чтобы любые элементы внутри не могли растянуть экран */
+    * {
+        max-width: 100vw;
+        box-sizing: border-box;
+    }
+
         body { font-family: 'Inter', sans-serif; }
         .font-gaming { font-family: 'Orbitron', sans-serif; }
         .neon-glow {
